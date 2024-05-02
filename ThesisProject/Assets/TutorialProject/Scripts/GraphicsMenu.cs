@@ -6,15 +6,15 @@ using UnityEngine.UI;
 public class GraphicsMenu : MonoBehaviour
 {
     GameObject player;
-    Dropdown resolutionDropDown;
-    Slider mouseSensitivitySlider;
+    [SerializeField] TMPro.TMP_Dropdown resolutionDropDown;
+    [SerializeField] Slider mouseSensitivitySlider;
     TMPro.TextMeshPro sensitivityValueText;
-    //resolutions array;
+    Resolution[] resolutions;
 
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-
+        PopulateResDropDown();
     }
     public void ChangeSensitivity()
     {
@@ -29,12 +29,23 @@ public class GraphicsMenu : MonoBehaviour
     }
     public void PopulateResDropDown()
     {
-        int currentResIndex;
-        //List<string> options = Screen.resolutions
-
+        int currentResIndex=0;
+        List<string> options = new List<string>();
+        resolutions = Screen.resolutions;
+        for(int i = 0;  i < resolutions.Length; i++)
+        {
+            options.Add(resolutions[i].height + "x" + resolutions[i].width);
+            if (Screen.currentResolution.width == resolutions[i].width && Screen.currentResolution.height == resolutions[i].height)
+            {
+                currentResIndex = i;
+            }
+        }
+        resolutionDropDown.ClearOptions();
+        resolutionDropDown.AddOptions(options);
+        resolutionDropDown.value = currentResIndex;
     }
     public void ChangeReslolution(int resIndex)
     {
-
+        Screen.SetResolution(resolutions[resIndex].width,resolutions[resIndex].height, Screen.fullScreenMode);
     }
 }
